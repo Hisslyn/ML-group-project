@@ -25,6 +25,13 @@ def train_all_models(X_train, y_train, models_dict):
         model_path = os.path.join(MODELS_DIR, f"{name}.joblib")
         joblib.dump(gs.best_estimator_, model_path)
 
+        grid_df = pd.DataFrame({
+            "params": [str(p) for p in gs.cv_results_["params"]],
+            "mean_test_score": gs.cv_results_["mean_test_score"],
+            "std_test_score": gs.cv_results_["std_test_score"],
+        }).sort_values("mean_test_score", ascending=False)
+        grid_df.to_csv(os.path.join(METRICS_DIR, f"grid_scores_{name}.csv"), index=False)
+
         rows.append({
             "model": name,
             "best_params": str(gs.best_params_),

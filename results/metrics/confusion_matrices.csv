@@ -1,0 +1,9 @@
+model,tn,fp,fn,tp
+DecisionTree,72,10,26,76
+GaussianNB,69,13,11,91
+LDA,65,17,15,87
+LogisticRegression,63,19,11,91
+QDA,69,13,11,91
+RandomForest,65,17,11,91
+SVM,63,19,6,96
+kNN,67,15,10,92

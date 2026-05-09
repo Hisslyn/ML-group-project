@@ -1,0 +1,4 @@
+params,mean_test_score,std_test_score
+{'solver': 'lsqr'},0.9008585472542112,0.022071922911852584
+{'solver': 'svd'},0.9005607531081786,0.02140796554100701
+{'solver': 'eigen'},,

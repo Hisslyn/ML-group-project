@@ -47,6 +47,48 @@ def evaluate_all_models(models_dir, X_test, y_test):
     return df
 
 
+def compute_train_roc_auc(model, X_train, y_train):
+    y_prob = model.predict_proba(X_train)[:, 1]
+    return roc_auc_score(y_train, y_prob)
+
+
+def save_train_vs_test_roc_auc(models_dir, X_train, y_train, X_test, y_test):
+    cv_df = pd.read_csv(os.path.join(METRICS_DIR, "cv_results.csv"))
+    cv_lookup = dict(zip(cv_df["model"], cv_df["best_cv_roc_auc"]))
+    rows = []
+    for fname in sorted(os.listdir(models_dir)):
+        if not fname.endswith(".joblib"):
+            continue
+        model_name = fname[:-len(".joblib")]
+        model = joblib.load(os.path.join(models_dir, fname))
+        train_auc = compute_train_roc_auc(model, X_train, y_train)
+        test_auc = roc_auc_score(y_test, model.predict_proba(X_test)[:, 1])
+        rows.append({
+            "model": model_name,
+            "train_roc_auc": round(train_auc, 6),
+            "cv_roc_auc": round(cv_lookup[model_name], 6),
+            "test_roc_auc": round(test_auc, 6),
+        })
+    out = pd.DataFrame(rows, columns=["model", "train_roc_auc", "cv_roc_auc", "test_roc_auc"])
+    out.to_csv(os.path.join(METRICS_DIR, "train_vs_test_roc_auc.csv"), index=False)
+    return out
+
+
+def save_confusion_matrices_csv(models_dir, X_test, y_test):
+    rows = []
+    for fname in sorted(os.listdir(models_dir)):
+        if not fname.endswith(".joblib"):
+            continue
+        model_name = fname[:-len(".joblib")]
+        model = joblib.load(os.path.join(models_dir, fname))
+        cm = confusion_matrix(y_test, model.predict(X_test))
+        tn, fp, fn, tp = cm.ravel()
+        rows.append({"model": model_name, "tn": int(tn), "fp": int(fp), "fn": int(fn), "tp": int(tp)})
+    out = pd.DataFrame(rows, columns=["model", "tn", "fp", "fn", "tp"])
+    out.to_csv(os.path.join(METRICS_DIR, "confusion_matrices.csv"), index=False)
+    return out
+
+
 def plot_roc_curve_single(model, X_test, y_test, model_name, save_path):
     y_prob = model.predict_proba(X_test)[:, 1]
     fpr, tpr, _ = roc_curve(y_test, y_prob)

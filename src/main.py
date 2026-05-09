@@ -10,6 +10,7 @@ from train import train_all_models
 import joblib
 from evaluate import (
     evaluate_all_models, plot_roc_curve_single, plot_roc_curves_combined,
+    save_train_vs_test_roc_auc, save_confusion_matrices_csv,
     MODELS_DIR, METRICS_DIR, PLOTS_DIR,
 )
 
@@ -78,6 +79,15 @@ def main():
     combined_path = os.path.join(PLOTS_DIR, "roc_combined.png")
     plot_roc_curves_combined(best_models, X_test_t, y_test, combined_path)
     print(f"  Saved {combined_path}")
+
+    print("\n--- ADDITIONAL ARTIFACTS ---")
+    auc_df = save_train_vs_test_roc_auc(MODELS_DIR, X_train_t, y_train, X_test_t, y_test)
+    print("Train vs CV vs Test ROC-AUC saved.")
+    print(auc_df.to_string(index=False))
+
+    cm_csv = save_confusion_matrices_csv(MODELS_DIR, X_test_t, y_test)
+    print("\nConfusion matrix counts saved.")
+    print(cm_csv.to_string(index=False))
 
 
 if __name__ == "__main__":

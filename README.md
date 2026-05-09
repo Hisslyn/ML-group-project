@@ -161,6 +161,9 @@ Runs the full pipeline from scratch: EDA → preprocessing → GridSearchCV tuni
 | `results/plots/cm_{name}.png` | Confusion matrix heatmap for each model on the test set (8 files) |
 | `results/plots/roc_{name}.png` | Individual ROC curve with AUC in legend for each model (8 files) |
 | `results/plots/roc_combined.png` | All 8 ROC curves overlaid on one figure with distinct colors and AUC legend |
+| `results/metrics/grid_scores_{name}.csv` | Full GridSearchCV results for each model (params, mean_test_score, std_test_score), sorted by mean_test_score descending (8 files) |
+| `results/metrics/train_vs_test_roc_auc.csv` | Per-model ROC-AUC on train set, best CV fold, and test set (columns: model, train_roc_auc, cv_roc_auc, test_roc_auc) |
+| `results/metrics/confusion_matrices.csv` | Raw confusion matrix counts per model (columns: model, tn, fp, fn, tp) |
 
 ## Checklist
 
