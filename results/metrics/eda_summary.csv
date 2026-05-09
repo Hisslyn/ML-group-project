@@ -1,0 +1,26 @@
+column,dtype,missing_count,missing_pct
+id,int64,0,0.0
+age,int64,0,0.0
+sex,str,0,0.0
+dataset,str,0,0.0
+cp,str,0,0.0
+trestbps,float64,59,6.41
+chol,float64,30,3.26
+fbs,object,90,9.78
+restecg,str,2,0.22
+thalch,float64,55,5.98
+exang,object,55,5.98
+oldpeak,float64,62,6.74
+slope,str,309,33.59
+ca,float64,611,66.41
+thal,str,486,52.83
+num,int64,0,0.0
+--- target before binarization ---,,,
+num=0,count,411,
+num=1,count,265,
+num=2,count,109,
+num=3,count,107,
+num=4,count,28,
+--- target after binarization ---,,,
+0 (no disease),count,411,
+1 (disease),count,509,

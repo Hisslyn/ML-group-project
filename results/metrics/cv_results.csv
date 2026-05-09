@@ -1,0 +1,9 @@
+model,best_params,best_cv_roc_auc
+kNN,{'n_neighbors': 21},0.892851
+GaussianNB,{'var_smoothing': np.float64(1e-11)},0.88677
+LogisticRegression,{'C': 1},0.900805
+LDA,{'solver': 'lsqr'},0.900859
+QDA,{'reg_param': 0.3},0.896833
+DecisionTree,{'max_depth': 3},0.830504
+SVM,{'C': 1},0.898545
+RandomForest,"{'max_depth': 5, 'n_estimators': 200}",0.892731
