@@ -131,18 +131,16 @@ def plot_roc_curves_combined(models_dict, X_test, y_test, save_path):
 
 def plot_confusion_matrix(cm, model_name, save_path):
     fig, ax = plt.subplots(figsize=(5, 4))
-    sns.heatmap(
-        cm,
-        annot=True,
-        fmt="d",
-        cmap="Blues",
-        xticklabels=["No disease", "Disease"],
-        yticklabels=["No disease", "Disease"],
-        ax=ax,
-    )
+    im = ax.imshow(cm, cmap="Blues")
+    plt.colorbar(im, ax=ax)
     ax.set_xlabel("Predicted")
     ax.set_ylabel("Actual")
     ax.set_title(f"Confusion Matrix — {model_name}")
-    fig.tight_layout()
-    fig.savefig(save_path, dpi=150)
+    for i in range(2):
+        for j in range(2):
+            ax.text(j, i, str(cm[i, j]), ha="center", va="center",
+                    color="white" if cm[i, j] > cm.max() / 2 else "black",
+                    fontsize=14)
+    plt.tight_layout()
+    fig.savefig(save_path, dpi=150, bbox_inches="tight")
     plt.close(fig)
