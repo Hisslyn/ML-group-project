@@ -54,14 +54,8 @@ def prepare_data(df):
         df, target_col="num", id_cols=id_cols
     )
 
-    X_train, X_test, y_train, y_test = split_data(X, y)
+    X_train_raw, X_test_raw, y_train, y_test = split_data(X, y)
 
     preprocessor = build_preprocessor(numeric_cols, categorical_cols)
-    X_train_t = preprocessor.fit_transform(X_train)
-    X_test_t = preprocessor.transform(X_test)
 
-    ohe = preprocessor.named_transformers_["cat"]["encoder"]
-    cat_feature_names = ohe.get_feature_names_out(categorical_cols).tolist()
-    feature_names = numeric_cols + cat_feature_names
-
-    return X_train_t, X_test_t, y_train, y_test, preprocessor, feature_names
+    return X_train_raw, X_test_raw, y_train, y_test, preprocessor

@@ -45,20 +45,20 @@ def main():
     _pd.DataFrame(eda_rows).to_csv(os.path.join(METRICS_DIR, "eda_summary.csv"), index=False)
 
     print("\n--- PREPROCESSING ---")
-    X_train_t, X_test_t, y_train, y_test, preprocessor, feature_names = prepare_data(df)
-    print(f"X_train_t: {X_train_t.shape}  X_test_t: {X_test_t.shape}")
+    X_train_raw, X_test_raw, y_train, y_test, preprocessor = prepare_data(df)
+    print(f"X_train_raw: {X_train_raw.shape}  X_test_raw: {X_test_raw.shape}")
     print(f"Train class dist: {dict(y_train.value_counts().sort_index())}")
     print(f"Test  class dist: {dict(y_test.value_counts().sort_index())}")
 
     print("\n--- TRAINING ---")
     models_dict = get_models()
-    cv_df = train_all_models(X_train_t, y_train, models_dict)
+    cv_df = train_all_models(X_train_raw, y_train, models_dict, preprocessor)
 
     print("\n--- CV RESULTS SUMMARY ---")
     print(cv_df.to_string(index=False))
 
     print("\n--- EVALUATION ON TEST SET ---")
-    test_df = evaluate_all_models(MODELS_DIR, X_test_t, y_test)
+    test_df = evaluate_all_models(MODELS_DIR, X_test_raw, y_test)
     test_df_sorted = test_df.sort_values("roc_auc", ascending=False)
 
     out_path = os.path.join(METRICS_DIR, "test_metrics.csv")
@@ -73,19 +73,19 @@ def main():
     }
     for model_name, model in best_models.items():
         single_path = os.path.join(PLOTS_DIR, f"roc_{model_name}.png")
-        plot_roc_curve_single(model, X_test_t, y_test, model_name, single_path)
+        plot_roc_curve_single(model, X_test_raw, y_test, model_name, single_path)
         print(f"  Saved {single_path}")
 
     combined_path = os.path.join(PLOTS_DIR, "roc_combined.png")
-    plot_roc_curves_combined(best_models, X_test_t, y_test, combined_path)
+    plot_roc_curves_combined(best_models, X_test_raw, y_test, combined_path)
     print(f"  Saved {combined_path}")
 
     print("\n--- ADDITIONAL ARTIFACTS ---")
-    auc_df = save_train_vs_test_roc_auc(MODELS_DIR, X_train_t, y_train, X_test_t, y_test)
+    auc_df = save_train_vs_test_roc_auc(MODELS_DIR, X_train_raw, y_train, X_test_raw, y_test)
     print("Train vs CV vs Test ROC-AUC saved.")
     print(auc_df.to_string(index=False))
 
-    cm_csv = save_confusion_matrices_csv(MODELS_DIR, X_test_t, y_test)
+    cm_csv = save_confusion_matrices_csv(MODELS_DIR, X_test_raw, y_test)
     print("\nConfusion matrix counts saved.")
     print(cm_csv.to_string(index=False))
 

@@ -144,7 +144,7 @@ Runs the full pipeline from scratch: EDA → preprocessing → GridSearchCV tuni
 - **Most-frequent (mode) imputation for categorical features:** preserves the dominant category; avoids introducing a spurious new level
 - **One-hot encoding for categorical features:** `handle_unknown='ignore'` so unseen categories at test time produce an all-zero row rather than an error
 - **StandardScaler on all numeric features:** required by SVM, LR, kNN, LDA, QDA; applied uniformly so the same pipeline serves all 8 models without branching
-- **Preprocessor fit on training data only:** prevents test-set leakage; `transform` applied to test set using training statistics
+- **Preprocessor wrapped in a sklearn Pipeline with each estimator and passed to GridSearchCV.** Within cross-validation, the imputers and scaler are refit on each training fold only — no leakage between training and validation folds. The fitted Pipeline (preprocessor + classifier) is saved to disk; raw DataFrames are passed at evaluation time and the Pipeline handles transformation internally.
 - **GridSearchCV:** `cv=5`, `scoring='roc_auc'`, `n_jobs=-1`, `refit=True` so the best estimator is immediately usable on the test set
 - **`random_state=42`** set on all stochastic estimators: LogisticRegression, DecisionTree, SVC, RandomForestClassifier
 - **`SVC(probability=True)`:** required to enable `predict_proba` for ROC-AUC computation
