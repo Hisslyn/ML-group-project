@@ -24,7 +24,7 @@ def get_models():
         ),
         "LDA": (
             LinearDiscriminantAnalysis(),
-            {"solver": ["svd", "lsqr", "eigen"]},
+            {"solver": ["svd", "lsqr"]},
         ),
         "QDA": (
             QuadraticDiscriminantAnalysis(),

@@ -81,7 +81,7 @@ All implementations from `sklearn`:
 | kNN | `n_neighbors` | [3, 5, 7, 9, 11, 15, 21] |
 | GaussianNB | `var_smoothing` | `np.logspace(-11, -7, 5)` |
 | LogisticRegression | `C` | [0.01, 0.1, 1, 10, 100] |
-| LDA | `solver` | ['svd', 'lsqr', 'eigen'] |
+| LDA | `solver` | ['svd', 'lsqr'] |
 | QDA | `reg_param` | [0.0, 0.1, 0.3, 0.5, 0.7] |
 | DecisionTree | `max_depth` | [3, 5, 7, 10, 15, None] |
 | SVM | `C` | [0.01, 0.1, 1, 10, 100] |
@@ -149,6 +149,7 @@ Runs the full pipeline from scratch: EDA → preprocessing → GridSearchCV tuni
 - **`random_state=42`** set on all stochastic estimators: LogisticRegression, DecisionTree, SVC, RandomForestClassifier
 - **`SVC(probability=True)`:** required to enable `predict_proba` for ROC-AUC computation
 - **`LogisticRegression(max_iter=5000)`:** increased from default 100 to ensure convergence across all regularisation strengths in the grid
+- **LDA `eigen` solver excluded from grid:** one-hot encoding produces collinear features (OHE columns within each variable sum to a constant), making the within-class scatter matrix singular; `scipy.linalg.eigh` requires it to be positive definite and raises `LinAlgError` on both sklearn 1.x and 1.3+. The `svd` and `lsqr` solvers avoid this factorisation and are numerically stable with collinear inputs. `eigen` was removed to ensure cross-environment reproducibility.
 
 ## Outputs reference
 
