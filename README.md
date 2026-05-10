@@ -48,12 +48,11 @@ Binary classification project comparing 8 scikit-learn classifiers on the UCI He
 
 ### Preprocessing
 
-Applied uniformly to all 8 models via a single fitted `ColumnTransformer`:
+A `ColumnTransformer` preprocessor is built once and wrapped in a `sklearn.pipeline.Pipeline` with each classifier before being passed to `GridSearchCV`. Within each CV fold the imputers and scaler are refit on the fold's training rows only — no leakage between training and validation folds.
 
 - **Numeric features:** `SimpleImputer(strategy='median')` → `StandardScaler()`
 - **Categorical features:** `SimpleImputer(strategy='most_frequent')` → `OneHotEncoder(handle_unknown='ignore')`
 - **Train/test split:** 80/20 stratified, `random_state=42`
-- **Preprocessor fit on training data only** — no leakage from test set
 
 Result: 29 features after one-hot encoding (6 numeric + 23 from 8 categorical columns).
 
@@ -158,7 +157,7 @@ Runs the full pipeline from scratch: EDA → preprocessing → GridSearchCV tuni
 | `results/metrics/eda_summary.csv` | Column dtypes, missing value counts/%, and target distribution before and after binarization |
 | `results/metrics/cv_results.csv` | Best hyperparameters and best 5-fold CV ROC-AUC for each of the 8 models |
 | `results/metrics/test_metrics.csv` | Test-set accuracy, precision, recall, F1, ROC-AUC for each of the 8 models, sorted by ROC-AUC |
-| `results/models/{name}.joblib` | Fitted best estimator for each model (8 files), loadable with `joblib.load` |
+| `results/models/{name}.joblib` | Fitted best Pipeline (preprocessor + classifier) for each model (8 files), loadable with `joblib.load`; accepts raw DataFrames directly |
 | `results/plots/cm_{name}.png` | Confusion matrix heatmap for each model on the test set (8 files) |
 | `results/plots/roc_{name}.png` | Individual ROC curve with AUC in legend for each model (8 files) |
 | `results/plots/roc_combined.png` | All 8 ROC curves overlaid on one figure with distinct colors and AUC legend |
